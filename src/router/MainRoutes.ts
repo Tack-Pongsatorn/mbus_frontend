@@ -13,17 +13,31 @@ const MainRoutes = {
     {
       path: "/main",
       name: "main",
+      meta: {
+        requiresAuth: true,
+        tag: "หน้าหลัก"
+      },
+      // tag: "หน้าหลัก",
       component: () => import("@/views/Main.vue")
     },
     {
       path: "/expense",
       name: "expense",
+      meta: {
+        requiresAuth: true,
+        tag: "หน้าขอเบิกค่ารถ"
+      },
+
       component: () => import("@/views/ListBusInBorTor.vue")
     },
 
     {
       path: "/bus-register",
       name: "bus-register",
+      meta: {
+        requiresAuth: true,
+        tag: "หน้าลงทะเบียนรถ"
+      },
       component: () => import("@/views/C7.vue")
     },
 

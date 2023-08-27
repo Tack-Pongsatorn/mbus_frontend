@@ -25,3 +25,29 @@
     </div>
   </div>
 </template>
+<script setup lang="ts">
+import { useAuthStore } from "@/stores/auth";
+import axios from "axios";
+import { onMounted } from "vue";
+
+const authUser: any = useAuthStore();
+function sendMesages() {
+  const userId = authUser.user.userId;
+  axios
+    .post(
+      "https://line-oa-data-user-request-fa13dee09a49.herokuapp.com/push",
+      { userId }
+    )
+    .then((result) => {
+      console.log("result :>> ", result);
+    })
+    .catch((err) => {
+      console.log("err :>> ", err);
+    });
+}
+
+onMounted(() => {
+  sendMesages();
+  console.log(" authUser.value :>> ", authUser.user);
+});
+</script>

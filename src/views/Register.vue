@@ -8,8 +8,10 @@ import {
 } from "vue";
 import axiosServices from "../utils/axios";
 import { useRouter } from "vue-router";
+import { useAuthStore } from "@/stores/auth";
 
 const router = useRouter();
+const authUser: any = useAuthStore();
 
 interface Register {
   first_name: string;
@@ -102,7 +104,7 @@ const rawDate = reactive({
 let textSnackbar = ref<string>("");
 const snackbar = ref<boolean>(false);
 const valid = ref<boolean>(false);
-const stepRegister = ref<number>(3);
+const stepRegister = ref<number>(1);
 const textButton = ref<string>("สมัครสมาชิก");
 const formFirst = ref<any>(null);
 const formSecond = ref<any>(null);
@@ -117,6 +119,8 @@ const myBookBank = ref<HTMLInputElement | null>(null);
 let provinceAll = ref<string[]>([]);
 let amphursAll = ref<string[]>([]);
 const maxSizeBytes = 10 * 1024 * 1024;
+const userProfile = ref(authUser?.user);
+const dialog = ref<boolean>(true);
 
 const days = computed(() => {
   return Array.from({ length: 31 }, (_, i) => i + 1);
@@ -186,19 +190,20 @@ function register() {
   console.log("formData :>> ", formData);
 
   //send formData by axios
-  axiosServices
-    .post("/users/registration", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data"
-      }
-    })
-    .then((res) => {
-      console.log("res :>> ", res);
-      router.push({ name: "wait" });
-    })
-    .catch((err) => {
-      console.log("err :>> ", err);
-    });
+  // axiosServices
+  //   .post("/users/registration", formData, {
+  //     headers: {
+  //       "Content-Type": "multipart/form-data"
+  //     }
+  //   })
+  //   .then((res) => {
+  //     console.log("res :>> ", res);
+  //     router.push({ name: "wait" });
+  //   })
+  //   .catch((err) => {
+  //     console.log("err :>> ", err);
+  //   });
+  router.push({ name: "wait" });
 
   //send sms by axios
 }
@@ -303,6 +308,7 @@ function getAmphur() {
 onMounted(() => {
   getRole();
   getProvince();
+  console.log(" authUser.value :>> ", authUser.user);
 });
 
 watch(
@@ -820,5 +826,48 @@ watch(
         </template>
       </v-snackbar>
     </div>
+    <v-dialog
+      v-model="dialog"
+      persistent
+      :overlay="false"
+      max-width="300px"
+      transition="dialog-transition"
+    >
+      <v-card class="mx-auto" max-width="344">
+        <v-card-title>
+          <v-row justify="center">
+            <v-avatar class="ma-10" size="125">
+              <v-img :src="userProfile.pictureUrl"></v-img>
+            </v-avatar>
+          </v-row>
+        </v-card-title>
+        <v-card-title
+          class="text-h5 font-weight-medium pb-4 text-center"
+        >
+          ยินดีต้อนรับคุณ
+        </v-card-title>
+
+        <v-card-subtitle
+          class="text-h6 font-weight-medium pb-4 text-center"
+        >
+          {{ userProfile.displayName }}
+        </v-card-subtitle>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+
+          <v-btn
+            color="primary"
+            variant="flat"
+            block
+            rounded="lg"
+            @click="dialog = false"
+          >
+            ตกลง
+          </v-btn>
+          <v-spacer></v-spacer>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
